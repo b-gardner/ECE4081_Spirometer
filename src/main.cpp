@@ -76,6 +76,8 @@ void loop() {
     values[0] = read_value;
 
     ema_value = (1.0-EMA_WEIGHT)*ema_value + EMA_WEIGHT*((float) read_value);
+
+    // print out values, compatiable with Arduino Serial Plotter
     Serial.print(read_value);
     Serial.print(" ");
     Serial.println(ema_value);
