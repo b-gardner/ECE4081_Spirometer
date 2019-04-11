@@ -2,7 +2,7 @@
 // User selectable variables
 #define SAMPLE_PERIOD 25 // time between samples in ms
 #define DISPLAY_PERIOD 200
-#define EMA_WEIGHT 0.5 // ema = Exponential Moving Average, handy b/c don't need to
+#define EMA_WEIGHT 0.3 // ema = Exponential Moving Average, handy b/c don't need to
                       // remember extra values
 #define NUM_GRAPH_VALS 60
 //Setup specific definitions
@@ -80,16 +80,19 @@ void loop() {
     Serial.print(" ");
     Serial.println(ema_value);
     value_recorded = 1;
+
   }
   else if(value_recorded && (millis() % SAMPLE_PERIOD) > 2) {
     value_recorded = 0;
   }
 
   if(!value_displayed && (millis() % DISPLAY_PERIOD) < 10) { // these lines display to the OLED every displayPeriod ms
+    // Display single number
     display.fillRect(36,15,25,7,BLACK);
     display.setCursor(36,15);
     display.print(values[0]);
 
+    //display graph
     graph_obj.drawGraph(display,0,63,77,38,values,NUM_GRAPH_VALS,WHITE);
     display.display();
   }

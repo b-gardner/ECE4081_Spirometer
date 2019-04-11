@@ -40,7 +40,6 @@ void SSD1306_Graph::drawGraph(Adafruit_SSD1306 disp, int x, int y, int w, int h,
     }
 
     //print axis values
-    //disp.setRotation(1); // TODO ensure this is the right rotation
     disp.setTextSize(1);
     disp.setTextColor(WHITE);
     disp.setCursor(x,y-8);
@@ -48,20 +47,20 @@ void SSD1306_Graph::drawGraph(Adafruit_SSD1306 disp, int x, int y, int w, int h,
 
     disp.setCursor(x,y-h+1);
     disp.print(SSD1306_Graph::max_val);
+    
     //print y_axis line
     disp.drawFastVLine(x+17,y-h,h,WHITE);
     disp.drawFastHLine(x,y-h,17,WHITE);
-    //
-    // // print x_axis line
+
+    // print x_axis line
     disp.drawFastHLine(x,y,w,WHITE);
 
     // note: we will have values scroll from the right across, so first pixel will go to x+w x position
-    // do y-scaling
     for(int i = 0; i < val_count; i++){ // for each value
-      int pix_y = y - 1 - SSD1306_Graph::scaleVal(vals[i],h); // get its y offset
+      int pix_y = y - 1 - SSD1306_Graph::scaleVal(vals[i],h); // get its y offset from minimum value
       int pix_x = x + w - (i+1)*x_bucket_width; // get its x_offset
       disp.drawFastHLine(pix_x,pix_y,x_bucket_width,WHITE); // draw the value (a line b/c it might)
-        // TODO: USE line interpolation rather than a horizontal line
+        // TODO: USE line interpolation rather than just a horizontal line
     }
 }
 
@@ -122,16 +121,9 @@ int SSD1306_Graph::scaleVal(int value, int h)
   @TODO: check how much quicker it is if we remove float math
 
   */
-
-  // int temp = value - SSD1306_Graph::min_val;
-  // float normalised = ((float) temp)/((float) SSD1306_Graph::range_val);
-  // int ret = ((int) (normalised * h));
-  // if (ret > max_val) return h;
-  // else if (ret < min_val) return 0;
-  // else return ret;
-h -=1;
-int temp = value - SSD1306_Graph::min_val;
-int temp2 = temp*h;
-return (temp2 / SSD1306_Graph::range_val);
+  h -=1;
+  int temp = value - SSD1306_Graph::min_val;
+  int temp2 = temp*h;
+  return (temp2 / SSD1306_Graph::range_val);
 
 }
