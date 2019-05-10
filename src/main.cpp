@@ -1,8 +1,13 @@
 #include <Arduino.h>
 #include <math.h>
+
+#include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
 // User selectable variables
 #define SAMPLE_PERIOD 25 // time between samples in ms
-#define DISPLAY_PERIOD 200
+#define disp_PERIOD 200
 #define EMA_WEIGHT 0.3 // ema = Exponential Moving Average, handy b/c don't need to
                       // remember extra values
 #define NUM_GRAPH_VALS 60
@@ -11,7 +16,7 @@
 
 //Globals
 int value_recorded = 0;
-int value_displayed = 0;
+int value_disped = 0;
 float ema_value = 0;
 float Vdd = 5.0; //check if 5 exactly, might be slightly off
 int PSI = 0;
@@ -22,21 +27,20 @@ float rho = 1.1225; //air density in kg/m^3
 float radius_pipe;
 float radius25 = 5.975;
 float Cd = 0.6; //coeff of discharge of an orfice meter, supposed to be between 0.6-0.85
-//float beta = 
-// Display Settings
-#include <SPI.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-// Declaration for SSD1306 display connected using software SPI:
+//float beta = 
+// disp Settings
+
+#define SCREEN_WIDTH 128 // OLED disp width, in pixels
+#define SCREEN_HEIGHT 64 // OLED disp height, in pixels
+
+// Declaration for SSD1306 disp connected using software SPI:
 #define OLED_MOSI   9
 #define OLED_CLK   10
 #define OLED_DC    11
 #define OLED_CS    12
 #define OLED_RESET 13
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
+Adafruit_SSD1306 disp(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 // my graphing "library"
@@ -52,24 +56,24 @@ void setup() {
   Serial.begin(9600);
   pinMode(READ_PIN,INPUT);
 
-  display.begin(SSD1306_SWITCHCAPVCC);
+  disp.begin(SSD1306_SWITCHCAPVCC);
 
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);        // Draw white text
-  display.setCursor(7,0);             // Start at top-left corner
-  display.println(F("Spirometer"));
-  display.setTextSize(1);
-  display.setCursor(30,15);
-  display.println(F("Welcome"));
-  display.setCursor(15,24);
-  display.println(F("ECE4081 Project"));
-  display.display();
+  disp.clearDisplay();
+  disp.setTextSize(2);
+  disp.setTextColor(WHITE);        // Draw white text
+  disp.setCursor(7,0);             // Start at top-left corner
+  disp.println(F("Spirometer"));
+  disp.setTextSize(1);
+  disp.setCursor(30,15);
+  disp.println(F("Welcome"));
+  disp.setCursor(15,24);
+  disp.println(F("ECE4081 Project"));
+  disp.display();
   delay(2000);
-  display.fillRect(0,15,128,49,BLACK);
-  display.setTextSize(1);
-  display.setCursor(6,15);
-  display.print(F("last:"));
+  disp.fillRect(0,15,128,49,BLACK);
+  disp.setTextSize(1);
+  disp.setCursor(6,15);
+  disp.print(F("last:"));
 
 }
 
@@ -88,8 +92,8 @@ void loop() {
       values[i] = values[i-1];
     }
 
-    //values[0] = read_value;
-    values[0] = pressure_PSI;
+    values[0] = read_value;
+    //values[0] = pressure_PSI;
     ema_value = (1.0-EMA_WEIGHT)*ema_value + EMA_WEIGHT*((float) read_value); //averaging?
 
     // print out values, compatiable with Arduino Serial Plotter
@@ -107,18 +111,18 @@ void loop() {
     value_recorded = 0;
   }
 
-  if(!value_displayed && (millis() % DISPLAY_PERIOD) < 10) { // these lines display to the OLED every displayPeriod ms
-    // Display single number
-    display.fillRect(36,15,25,7,BLACK);
-    display.setCursor(36,15);
-    display.print(values[0]);
+  if(!value_disped && (millis() % disp_PERIOD) < 10) { // these lines disp to the OLED every dispPeriod ms
+    // disp single number
+    disp.fillRect(36,15,25,7,BLACK);
+    disp.setCursor(36,15);
+    disp.print(values[0]);
 
-    //display graph
-    graph_obj.drawGraph(display,0,63,77,38,values,NUM_GRAPH_VALS,WHITE);
-    display.display();
+    //disp graph
+    graph_obj.drawGraph(disp,0,63,77,38,values,NUM_GRAPH_VALS,WHITE);
+    disp.display();
   }
-  else if(value_displayed && (millis() % DISPLAY_PERIOD) > 10) {
-    value_displayed = 0;
+  else if(value_disped && (millis() % disp_PERIOD) > 10) {
+    value_disped = 0;
   }
 
 }
