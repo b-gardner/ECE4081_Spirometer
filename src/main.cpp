@@ -216,6 +216,7 @@ void loop() {
     else if(value_displayed && (millis() % disp_PERIOD) > 10) {
       value_displayed = 0;
     }
+    _delay_us(500);
   }
 }
 
