@@ -21,6 +21,7 @@
 #define RESTING_VALUE 780
 #define THRESHOLD_LIMIT 10
 
+#define CALIBRATION_VOLUME 4.2
 
 //Globals
 int value_recorded = 0;
@@ -117,7 +118,7 @@ void loop() {
   uint32_t breath_start_time = 0;
 
   while(1){
-    if(!value_recorded && (millis() % SAMPLE_PERIOD) < 2){ // these lines service analog write every samplePeriod ms
+    if(!value_recorded && (millis() % SAMPLE_PERIOD) < 2){ // these lines service analog write every SAMPLE_PERIOD ms
       last_time_read = time_read;
       int read_value = analogRead(READ_PIN);
       time_read = millis();
@@ -160,7 +161,7 @@ void loop() {
         cal_volume += (absInt(read_value-offset_value))*(time_read-last_time_read);
       }
       if(now_cal_read == 1 && prev_cal_read == 0 && (millis() - cal_start_time)>750){
-        calibration_value = 1.50/cal_volume;
+        calibration_value = CALIBRATION_VOLUME/cal_volume;
         EEPROM.put(0,calibration_value);
         disp.fillRect(90,40,5,8,BLACK);
         Serial.print("CAL_END------ ");
