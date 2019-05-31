@@ -3,4 +3,9 @@
 .piolibdeps
 .clang_complete
 .gcc-flags.json
-.vscode
+.vscode/**
+src/.vscode/ipch/f453f9b02e973dfb/mmap_address.bin
+.vscode/.BROWSE.C_CPP.DB
+.vscode/.BROWSE.C_CPP.DB-shm
+.vscode/.BROWSE.C_CPP.DB-wal
+.vscode/ipch/f453f9b02e973dfb/MAIN.ipch
