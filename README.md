@@ -7,5 +7,5 @@ In this project you'll find we ran on an Arduino Uno. Below is a parts list:
   * Arduino Uno
   * MPX53DP Differential Pressure sensor or equiv. 
   * Adafruit SSD1306 128x64 OLED display
-  * 3x OpAmp, we used an MC660CN which is a Quad-opamp in a DIP package
+  * 3x OpAmp, we used an MC660CN which is a Quad-opamp in a DIP package, this is configured as a instrumentation amplifier
   * assorted resistors for amplifier
